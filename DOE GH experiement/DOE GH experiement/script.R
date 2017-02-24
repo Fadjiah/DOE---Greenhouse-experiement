@@ -1,7 +1,11 @@
 ##### LOAD INFORMATION #####
 # pakage 
 library(ggplot2)
+library(car)
+library(mvtnorm)
 library(ggcorrplot)
+
+
 # import data
 doe_df <- read.csv(file = "C:/Users/fadji_000/AppData/Local/Temp/Projet serre DOE.csv.utf8", header = TRUE, row.names = NULL, encoding = "UTF-8", sep = ";", dec = ",", quote = "\"", comment.char = "")
 
@@ -10,13 +14,14 @@ doe_df <- read.csv(file = "C:/Users/fadji_000/AppData/Local/Temp/Projet serre DO
 #verify 
 print(doe_df) 
 
-# Verify the class of each column
-sapply(doe_df, class)
-
 # change class of column
+doe_df$Bloc <- as.factor(doe_df$Bloc)
 doe_df$serie <- as.factor(doe_df$serie)
 doe_df$position <- as.factor(doe_df$position)
-doe_df$bloc <- as.factor(doe_df$bloc)
+
+
+# Verify the class of each column
+sapply(doe_df, class)
 
 # Change column name result to height
 names(doe_df)[names(doe_df) == 'result'] <- 'height'
@@ -28,13 +33,13 @@ names(doe_df)[names(doe_df) == 'Bloc'] <- 'bloc'
 #verify 
 print(names(doe_df[8]))
 
+# Convert to NA all 0 value
 
-# Convert to NA all 
-for (i in 1:length(doe_df$height)) {
-   if (doe_df$height[i]==0) {
-      doe_df$height[i]<-NA
-     }
-}
+#for (i in 1:length(doe_df$height)) {
+ # if (doe_df$height[i]==0) {
+  #    doe_df$height[i]<-NA
+   # }
+#}
 #verify
 print(doe_df)
 
@@ -64,12 +69,18 @@ catnipDoe_aov2 <- anova(lm(as.double(height) ~ light * water * fertilizer, data 
 print(catnipDoe_aov2)
 
 #Fennel
-fennelDoe_df <- anova(lm(as.double(height) ~ light * water * fertilizer, data = fennelDoe_df))
-print(fennelDoe_df)
+fennelDoe_aov2 <- anova(lm(as.double(height) ~ light * water * fertilizer, data = fennelDoe_df))
+print(fennelDoe_aov2)
+
+
 
 ####### PLOT #############
 
-ggplot(doe_df, aes(x = id, y = as.double(height), col = plant)) + geom_point(aes(shape = bloc)) + geom_smooth(na.rm = TRUE)
+ggplot(doe_df, aes(x = id, y = rnorm(height), col = plant)) + geom_point(aes(shape = bloc)) + geom_smooth(na.rm = TRUE)
+ggplot(doe_df, aes(x = id, y = rnorm(height), col = plant)) + geom_boxplot()
 
-ggplot(doe_df, aes(x = id, y = as.double(height), col = plant)) + geom_boxplot()
+ggplot(fennelDoe_df, aes(x = height, y = water, col = fertilizer)) + geom_point()
+
+scatterplotMatrix(doe_df[4:9])
+
 
