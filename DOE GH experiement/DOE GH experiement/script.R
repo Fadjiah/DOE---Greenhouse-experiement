@@ -2,9 +2,19 @@
 library(ggplot2)
 # import data
 doe_df <- read.csv(file = "C:/Users/fadji_000/AppData/Local/Temp/Projet serre DOE.csv.utf8", header = TRUE, row.names = NULL, encoding = "UTF-8", sep = ";", dec = ",", quote = "\"", comment.char = "")
+
+# Verify the class of each column
+lapply(doe_df,class)
+
+
+# Convert to NA all 
+for (i in 1:length(doe_df$result)) {
+   if (doe_df$result[i]==0) {
+      doe_df$result[i]<-NA
+     }
+}
+
 print(doe_df)
-
-
 
 # convert natural variable to coded variable
 
@@ -26,8 +36,9 @@ fennelDoe_df <- subset(doe_df, plant == "Fennel")
 
 #apply anova to each subset
 #catnip
+lm(doe_df$result)
 
-catnipDoe_aov2 <- anova(lm(as.double(result) ~ light*water*fertilizer, data = catnipDoe_df))
+catnipDoe_aov2 <- anova(lm(result) ~ light*water*fertilizer, data = catnipDoe_df)
 print(catnipDoe_aov2)
 
 #Fennel
