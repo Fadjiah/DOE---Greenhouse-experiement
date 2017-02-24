@@ -1,7 +1,9 @@
 # pakage 
 library(ggplot2)
 # import data
-doe_df <- read.csv(file = "C:/Users/fadji_000/AppData/Local/Temp/Prejet serre DOE.csv.utf8", header = TRUE, row.names = NULL, encoding = "UTF-8", sep = ";", dec = ".", quote = "\"", comment.char = "")
+doe_df <- read.csv(file = "C:/Users/fadji_000/AppData/Local/Temp/Projet serre DOE.csv.utf8", header = TRUE, row.names = NULL, encoding = "UTF-8", sep = ";", dec = ",", quote = "\"", comment.char = "")
+print(doe_df)
+
 
 
 # convert natural variable to coded variable
@@ -23,8 +25,15 @@ catnipDoe_df <- subset(doe_df, plant == "Catnip")
 fennelDoe_df <- subset(doe_df, plant == "Fennel")
 
 #apply anova to each subset
-#Fenouille
+#catnip
 
-#catnipDoe_aov2 <- anova(lm(as.double(result) ~ light + Eau + Engrais + Lumiere:Engrais + Engrais:Eau + Lumiere:Eau + Lumiere:Eau:Engrais, data = catnipDoe_df))
-#print(aov2_expSerreFenouille)
+catnipDoe_aov2 <- anova(lm(as.double(result) ~ light*water*fertilizer, data = catnipDoe_df))
+print(catnipDoe_aov2)
+
+#Fennel
+fennelDoe_df <- anova(lm(as.double(result) ~ light * water * fertilizer, data = fennelDoe_df))
+print(fennelDoe_df)
+
+
+ggplot(doe_df, aes(x = id, y = as.double(result), col = plant)) + geom_point()+geom_smooth()
 
